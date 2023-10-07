@@ -25,7 +25,7 @@ contract MetaFiLendingPlatform {
     // Contract owner
     address public owner;
 
-    event CheckBalance(string text, uint amount);
+    event CheckBalance(uint amount);
 
     constructor(
         address _tokenAddress,
@@ -108,6 +108,7 @@ contract MetaFiLendingPlatform {
     function requestBorrowingLimitIncrease(address borrower, uint256 amount)
         external
     {
+        require(borrower != address(0), "Invalid address");
         require(msg.sender == owner, "Only the owner can approve limit increase");
         allowedBorrowers[borrower][msg.sender] = amount;
     }
@@ -118,17 +119,15 @@ contract MetaFiLendingPlatform {
         view
         returns (bool)
     {
+        require(borrower != address(0), "Invalid address");
         return
             (balances[borrower] - borrowings[borrower]) >=
             (amount + allowedBorrowers[borrower][msg.sender]);
     }
 
     function getBalance(address user_account) external returns (uint){
-    
-       string memory data = "User Balance is : ";
        uint user_bal = user_account.balance;
-       emit CheckBalance(data, user_bal );
+       emit CheckBalance(user_bal);
        return (user_bal);
-
     }
 }
